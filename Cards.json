@@ -1,0 +1,176 @@
+[
+  {
+    "id": "start-easy",
+    "exits": ["top-left", "top-right", "right", "bottom-left", "bottom-right"],
+    "count": 1
+  },
+  {
+    "id": "start-hard",
+    "exits": ["top-left", "top-right", "left", "right", "bottom-left", "bottom-right"],
+    "count": 1
+  },
+  {
+    "id": "card1",
+    "exits": ["top-left"],
+    "count": 3
+  },
+  {
+    "id": "card2",
+    "exits": ["top-right"],
+    "count": 3
+  },
+  {
+    "id": "card3",
+    "exits": ["left"],
+    "count": 3
+  },
+
+
+
+  {
+    "id": "card4",
+    "exits": ["top-left", "top-right"],
+    "count": 2
+  },
+  {
+    "id": "card5",
+    "exits": ["left", "right"],
+    "count": 2
+  },
+  {
+    "id": "card6",
+    "exits": ["top-right", "right"],
+    "count": 3
+  },
+  {
+    "id": "card7",
+    "exits": ["top-left", "left"],
+    "count": 3
+  },
+  {
+    "id": "card8",
+    "exits": ["top-left", "bottom-left"],
+    "count": 3
+  },
+  {
+    "id": "card9",
+    "exits": ["top-left", "bottom-right"],
+    "count": 2
+  },
+  {
+    "id": "card10",
+    "exits": ["top-right", "bottom-left"],
+    "count": 2
+  },
+  {
+    "id": "card11",
+    "exits": ["top-left", "right"],
+    "count": 2
+  },
+  {
+    "id": "card12",
+    "exits": ["top-right", "left"],
+    "count": 2
+  },
+
+
+
+  {
+    "id": "card13",
+    "exits": ["top-left", "top-right", "left"],
+    "count": 2
+  },
+  {
+    "id": "card14",
+    "exits": ["top-left", "top-right", "right"],
+    "count": 2
+  },
+  {
+    "id": "card15",
+    "exits": ["top-left", "right", "bottom-left"],
+    "count": 2
+  },
+  {
+    "id": "card16",
+    "exits": ["top-right", "left", "right"],
+    "count": 2
+  },
+  {
+    "id": "card17",
+    "exits": ["top-left", "left", "right"],
+    "count": 2
+  },
+  {
+    "id": "card18",
+    "exits": ["top-left", "left", "bottom-left"],
+    "count": 3
+  },
+  {
+    "id": "card19",
+    "exits": ["top-left" ,"right", "bottom-right"],
+    "count": 2
+  },
+  {
+    "id": "card20",
+    "exits": ["top-right", "left", "bottom-left"],
+    "count": 2
+  },
+  {
+    "id": "card21",
+    "exits": ["top-left", "top-right", "bottom-right"],
+    "count": 2
+  },
+  {
+    "id": "card22",
+    "exits": ["top-left", "top-right", "bottom-left"],
+    "count": 2
+  },
+
+
+
+  {
+    "id": "card23",
+    "exits": ["top-left", "top-right", "left", "right"],
+    "count": 2
+  },
+  {
+    "id": "card24",
+    "exits": ["top-left", "left", "right", "bottom-left"],
+    "count": 2
+  },
+  {
+    "id": "card25",
+    "exits": ["top-left", "top-right", "left", "bottom-left"],
+    "count": 2
+  },
+  {
+    "id": "card26",
+    "exits": ["top-left", "left", "bottom-left", "bottom-right"],
+    "count": 2
+  },
+  {
+    "id": "card27",
+    "exits": ["top-left", "top-right", "bottom-left", "bottom-right"],
+    "count": 2
+  },
+  {
+    "id": "card28",
+    "exits": ["top-left", "left", "right", "bottom-right"],
+    "count": 2
+  },
+  {
+    "id": "card29",
+    "exits": ["top-right", "left", "right", "bottom-left"],
+    "count": 2
+  },
+  {
+    "id": "card30",
+    "exits": ["top-left", "right", "bottom-left", "bottom-right"],
+    "count": 2
+  },
+  {
+    "id": "card31",
+    "exits": ["top-left", "top-right", "right", "bottom-left"],
+    "count": 2
+  }
+]
