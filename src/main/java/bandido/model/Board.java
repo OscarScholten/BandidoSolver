@@ -28,6 +28,20 @@ public class Board {
             this.y = y;
             this.direction = direction;
         }
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            OpenTunnel that = (OpenTunnel) o;
+            return x == that.x && y == that.y && direction.equals(that.direction);
+        }
+        @Override
+        public int hashCode() {
+            int result = Integer.hashCode(x);
+            result = 31 * result + Integer.hashCode(y);
+            result = 31 * result + direction.hashCode();
+            return result;
+        }
     }
 
     public boolean canPlace(Card card, int x, int y, int rotation) {
@@ -36,7 +50,6 @@ public class Board {
     }
 
     public void place(Card card, int x, int y, int rotation) {
-        // Place the card at (x, y) and also mark the second occupied cell depending on rotation
         placedCards.put(x + "," + y, new PlacedCard(card, rotation));
         int dx = 0, dy = 0;
         switch (rotation) {
@@ -49,101 +62,71 @@ public class Board {
         int y2 = y + dy;
         placedCards.put(x2 + "," + y2, new PlacedCard(card, rotation));
 
-        // For each exit, check if it connects to an adjacent card's exit
-        List<OpenTunnel> toRemove = new ArrayList<>();
-        List<OpenTunnel> toAdd = new ArrayList<>();
         for (String exit : card.getExits()) {
             int[] exitPos = getExitPosition(x, y, rotation, exit);
             int ex = exitPos[0];
             int ey = exitPos[1];
             String dir = getExitDirection(x, y, rotation, exit);
             int[] adj = getAdjacentCell(ex, ey, dir);
-            PlacedCard adjCard = placedCards.get(adj[0] + "," + adj[1]);
-            boolean closed = false;
-            if (adjCard != null) {
-                // Check if the adjacent card has an exit facing this card
-                for (String adjExit : adjCard.card.getExits()) {
-                    int[] adjExitPos = getExitPosition(adj[0], adj[1], adjCard.rotation, adjExit);
-                    String adjDir = getExitDirection(adj[0], adj[1], adjCard.rotation, adjExit);
-                    if (adjExitPos[0] == ex && adjExitPos[1] == ey && adjDir.equals(oppositeDirection(dir))) {
-                        closed = true;
-                        // Remove the matching tunnel from openTunnels if it exists
-                        toRemove.add(new OpenTunnel(ex, ey, dir));
-                        toRemove.add(new OpenTunnel(adj[0], adj[1], adjDir));
-                        break;
-                    }
+            String oppDir = oppositeDirection(dir);
+            OpenTunnel matching = new OpenTunnel(adj[0], adj[1], oppDir);
+            if (openTunnels.contains(matching)) {
+                openTunnels.remove(matching);
+            } else {
+                OpenTunnel newTunnel = new OpenTunnel(ex, ey, dir);
+                if (!openTunnels.contains(newTunnel)) {
+                    openTunnels.add(newTunnel);
                 }
             }
-            if (!closed) {
-                toAdd.add(new OpenTunnel(ex, ey, dir));
-            }
         }
-        // Remove all tunnels that are now closed
-        openTunnels.removeIf(t -> toRemove.stream().anyMatch(r -> r.x == t.x && r.y == t.y && r.direction.equals(t.direction)));
-        // Add new open tunnels
-        openTunnels.addAll(toAdd);
     }
 
-    // Helper: get the global position and direction of an exit after rotation
+    // Helper: get the global position of an exit after rotation
     private int[] getExitPosition(int x, int y, int rotation, String exit) {
-        // For 2x1 cards, exits are always on the edge of the card
-        // Card at (x, y) with rotation 0 occupies (x, y) and (x+1, y)
-        // Exits:
-        //   left: (x, y), direction "left"
-        //   right: (x+1, y), direction "right"
-        //   top-left: (x, y), direction "top"
-        //   top-right: (x+1, y), direction "top"
-        //   bottom-left: (x, y), direction "bottom"
-        //   bottom-right: (x+1, y), direction "bottom"
         int ex = x, ey = y;
-        String dir = exit;
         switch (rotation) {
             case 0:
                 switch (exit) {
-                    case "left": ex = x; ey = y; dir = "left"; break;
-                    case "right": ex = x+1; ey = y; dir = "right"; break;
-                    case "top-left": ex = x; ey = y; dir = "top"; break;
-                    case "top-right": ex = x+1; ey = y; dir = "top"; break;
-                    case "bottom-left": ex = x; ey = y; dir = "bottom"; break;
-                    case "bottom-right": ex = x+1; ey = y; dir = "bottom"; break;
+                    case "left": ex = x; ey = y; break;
+                    case "right": ex = x+1; ey = y; break;
+                    case "top-left": ex = x; ey = y; break;
+                    case "top-right": ex = x+1; ey = y; break;
+                    case "bottom-left": ex = x; ey = y; break;
+                    case "bottom-right": ex = x+1; ey = y; break;
                 }
                 break;
             case 90:
                 switch (exit) {
-                    case "left": ex = x; ey = y; dir = "top"; break;
-                    case "right": ex = x; ey = y+1; dir = "bottom"; break;
-                    case "top-left": ex = x; ey = y; dir = "left"; break;
-                    case "top-right": ex = x; ey = y+1; dir = "left"; break;
-                    case "bottom-left": ex = x; ey = y; dir = "right"; break;
-                    case "bottom-right": ex = x; ey = y+1; dir = "right"; break;
+                    case "left": ex = x; ey = y; break;
+                    case "right": ex = x; ey = y+1; break;
+                    case "top-left": ex = x; ey = y; break;
+                    case "top-right": ex = x; ey = y+1; break;
+                    case "bottom-left": ex = x; ey = y; break;
+                    case "bottom-right": ex = x; ey = y+1; break;
                 }
                 break;
             case 180:
                 switch (exit) {
-                    case "left": ex = x+1; ey = y; dir = "right"; break;
-                    case "right": ex = x; ey = y; dir = "left"; break;
-                    case "top-left": ex = x+1; ey = y; dir = "bottom"; break;
-                    case "top-right": ex = x; ey = y; dir = "bottom"; break;
-                    case "bottom-left": ex = x+1; ey = y; dir = "top"; break;
-                    case "bottom-right": ex = x; ey = y; dir = "top"; break;
+                    case "left": ex = x+1; ey = y; break;
+                    case "right": ex = x; ey = y; break;
+                    case "top-left": ex = x+1; ey = y; break;
+                    case "top-right": ex = x; ey = y; break;
+                    case "bottom-left": ex = x+1; ey = y; break;
+                    case "bottom-right": ex = x; ey = y; break;
                 }
                 break;
             case 270:
                 switch (exit) {
-                    case "left": ex = x; ey = y+1; dir = "bottom"; break;
-                    case "right": ex = x; ey = y; dir = "top"; break;
-                    case "top-left": ex = x; ey = y+1; dir = "right"; break;
-                    case "top-right": ex = x; ey = y; dir = "right"; break;
-                    case "bottom-left": ex = x; ey = y+1; dir = "left"; break;
-                    case "bottom-right": ex = x; ey = y; dir = "left"; break;
+                    case "left": ex = x; ey = y+1; break;
+                    case "right": ex = x; ey = y; break;
+                    case "top-left": ex = x; ey = y+1; break;
+                    case "top-right": ex = x; ey = y+1; break;
+                    case "bottom-left": ex = x; ey = y+1; break;
+                    case "bottom-right": ex = x; ey = y+1; break;
                 }
                 break;
         }
-        // Encode direction as int for legacy, but return as string in OpenTunnel
-        // We'll use 0 for left, 1 for right, 2 for top, 3 for bottom, but here just return ex, ey, and dir
-        // We'll ignore the int[2] direction encoding and just use the string
-        // So, return ex, ey, and encode dir as hashCode (for compatibility with old code)
-        return new int[] {ex, ey, dir.hashCode()};
+        return new int[] {ex, ey};
     }
 
     // Helper: rotate an exit direction string by rotation degrees
@@ -165,10 +148,7 @@ public class Board {
 
     public void initializeWithStartCard(Card startCard, int x, int y, int rotation) {
         place(startCard, x, y, rotation);
-        // Add all exits of the start card as open tunnels
-        for (String exit : startCard.getExits()) {
-            openTunnels.add(new OpenTunnel(x, y, exit));
-        }
+        // After placing, openTunnels already contains the correct tunnels
     }
 
     public List<OpenTunnel> getOpenTunnels() {
